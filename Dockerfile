@@ -1,28 +1,25 @@
-FROM java:openjdk-8-alpine
+FROM node:10.15.1-jessie-slim
 
-ENV ANDROID_HOME="/android-sdk" GRADLE="/gradle"
+# java
+RUN mkdir -p /usr/share/man/man1 \
+  && echo "deb http://http.debian.net/debian jessie-backports main" | tee --append /etc/apt/sources.list.d/jessie-backports.list > /dev/null \
+  && apt-get update \
+  && apt-get install -y -t jessie-backports openjdk-8-jdk
+
+ENV JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64" ANDROID_HOME="/android-sdk" GRADLE="/gradle" PATH="$JAVA_HOME/bin:${PATH}"
 
 # android
 WORKDIR $ANDROID_HOME
+RUN apt-get install unzip \
+  && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
+  && unzip sdk-tools-linux-4333796.zip \
+  && rm -f sdk-tools-linux-4333796.zip \
+  && yes | tools/bin/sdkmanager "platforms;android-27" "build-tools;28.0.3" "platform-tools" "tools" \
+  && rm -rf $ANDROID_HOME/tools/lib/monitor-x86 \
+  && rm -rf $ANDROID_HOME/tools/lib/monitor-x86_64
+
 ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:${PATH}"
 
-RUN apk add --update openssl \ 
-    && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
-    && unzip sdk-tools-linux-4333796.zip \
-    && rm -f sdk-tools-linux-4333796.zip \
-    && yes | tools/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" "platform-tools" "tools"
-
-# gradle
-WORKDIR $GRADLE
-RUN wget https://services.gradle.org/distributions/gradle-3.4.1-bin.zip \
-    && unzip -d . gradle-3.4.1-bin.zip \
-    && rm -f gradle-3.4.1-bin.zip
-
-ENV PATH="$GRADLE/gradle-3.4.1/bin:${PATH}"
-
-# node
-RUN apk add --update nodejs \
-    && npm install -g ionic cordova \
-    && cordova telemetry off
-
-WORKDIR /
+# ionic & cordova
+RUN npm install -g ionic cordova
+RUN cordova telemetry off
