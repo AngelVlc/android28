@@ -1,4 +1,4 @@
-# ionic-build
+# ionic-build-image
 
 Docker image with:
 
@@ -10,3 +10,38 @@ Docker image with:
 - cordova
 
 I use this image to build ionic projects for Android without Android Studio.
+
+## Usage example
+
+Dockerfile
+
+```
+FROM angelbh/ionic-build
+
+ENV APP /app/
+
+# app
+WORKDIR $APP
+COPY . $APP
+```
+
+docker-compose.yml
+
+```
+version: '2.2'
+services:
+  main:
+    build: .
+    command: bash -c "npm install && npm rebuild node-sass && ionic cordova build android"
+    volumes:
+      - '.:/app'
+```
+
+.dockerignore
+
+```
+node_modules
+platforms
+plugins
+www
+```

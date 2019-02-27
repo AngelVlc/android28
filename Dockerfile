@@ -14,10 +14,7 @@ RUN apt-get install unzip \
   && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
   && unzip sdk-tools-linux-4333796.zip \
   && rm -f sdk-tools-linux-4333796.zip \
-  && yes | tools/bin/sdkmanager "platforms;android-27" "build-tools;28.0.3" "platform-tools" "tools" \
-  && rm -rf $ANDROID_HOME/tools/lib/monitor-x86 \
-  && rm -rf $ANDROID_HOME/tools/lib/monitor-x86_64
-
+  && yes | tools/bin/sdkmanager "platforms;android-27" "build-tools;28.0.3" "platform-tools" "tools"
 ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:${PATH}"
 
 # gradle
@@ -28,5 +25,5 @@ RUN wget https://services.gradle.org/distributions/gradle-4.1-all.zip \
 ENV PATH="$GRADLE/gradle-4.1/bin:${PATH}"
 
 # ionic & cordova
-RUN npm install -g ionic cordova
-RUN cordova telemetry off
+RUN npm install -g ionic@4.10.3 cordova@8.1.2 \
+  && cordova telemetry off
