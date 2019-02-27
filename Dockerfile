@@ -20,6 +20,13 @@ RUN apt-get install unzip \
 
 ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:${PATH}"
 
+# gradle
+WORKDIR $GRADLE
+RUN wget https://services.gradle.org/distributions/gradle-4.1-all.zip \
+  && unzip -d . gradle-4.1-all.zip \
+  && rm -f gradle-4.1-all.zip
+ENV PATH="$GRADLE/gradle-4.1/bin:${PATH}"
+
 # ionic & cordova
 RUN npm install -g ionic cordova
 RUN cordova telemetry off

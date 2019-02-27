@@ -1,10 +1,11 @@
-# android-28
+# ionic-build
 
 Docker image with:
 
-- node 10
-- java 8
-- android 27
+- node 10.15.1
+- openjdk 8
+- android (platform 27 + buildtools + platform-tools + tools)
+- gradle 4.1
 - ionic
 - cordova
 
