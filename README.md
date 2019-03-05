@@ -1,4 +1,4 @@
-# ionic-build-image
+# ionic-build-image [![Build Status](https://travis-ci.org/AngelVlc/ionic-build-image.svg?branch=master)](https://travis-ci.org/AngelVlc/ionic-build-image)
 
 Docker image with:
 
