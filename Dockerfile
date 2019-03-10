@@ -15,7 +15,7 @@ RUN apt-get install unzip \
   && unzip sdk-tools-linux-4333796.zip > /dev/null \
   && rm -f sdk-tools-linux-4333796.zip > /dev/null\
   && yes | tools/bin/sdkmanager "platforms;android-27" "build-tools;28.0.3" "platform-tools" "tools"  > /dev/null
-ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:${PATH}"
+ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/28.0.3:${PATH}"
 
 # gradle
 WORKDIR $GRADLE
