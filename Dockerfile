@@ -25,5 +25,5 @@ RUN wget https://services.gradle.org/distributions/gradle-4.1-all.zip  > /dev/nu
 ENV PATH="$GRADLE/gradle-4.1/bin:${PATH}"
 
 # ionic & cordova
-RUN npm install -g ionic@4.10.3 cordova@8.1.2  > /dev/null \
+RUN npm install -g ionic@4.10.3 cordova@8.1.2 @angular/cli > /dev/null \
   && cordova telemetry off  > /dev/null
