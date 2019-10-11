@@ -4,8 +4,8 @@ Docker image with:
 
 - node 10.15.1
 - openjdk 8
-- android (platform 27 + buildtools + platform-tools + tools)
-- gradle 4.1
+- android (platform 28 + buildtools + platform-tools + tools)
+- gradle 4.10.3
 - ionic
 - cordova
 
