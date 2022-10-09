@@ -1,0 +1,52 @@
+version: 2.1
+
+workflows:
+    version: 2
+    build_and_test:
+      jobs:
+        - deploy:
+            context:
+              - DOCKER
+            filters:
+              branches:
+                only: master
+
+commands:
+  configure_gcloud_credentials:
+    steps:
+    - run: echo 'export GOOGLE_APPLICATION_CREDENTIALS="${PWD}/google_credentials.json"' >> $BASH_ENV
+    - run: echo $GCLOUD_SERVICE_KEY > "${GOOGLE_APPLICATION_CREDENTIALS}"
+  install_terraform:
+    steps:
+    - run: curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.1.0/terraform_1.1.0_linux_amd64.zip
+    - run: unzip /tmp/terraform.zip -d /tmp
+    - run: mv /tmp/terraform ~/bin
+    - run: export PATH="~/bin:$PATH"
+  init_terraform:
+    steps:
+    - run: cd terraformGc && terraform init -input=false
+  plan_or_apply_terraform:
+    parameters:
+      command:
+        description: the terraform command to execute
+        type: string
+    steps:
+    - run: cd terraformGc && terraform <<parameters.command>> -target=google_project_service.resource_manager -var app_name=$APP_NAME -var gc_project_id=$GCLOUD_PROJECT_ID
+    - run: cd terraformGc && terraform <<parameters.command>> -target=google_project_service.container_registry -var app_name=$APP_NAME -var gc_project_id=$GCLOUD_PROJECT_ID 
+    - run: cd terraformGc && terraform <<parameters.command>> -var app_name=$APP_NAME -var gc_project_id=$GCLOUD_PROJECT_ID
+  push_image_to_gcr:
+    steps:
+      - run: docker build --target release -t eu.gcr.io/$GCLOUD_PROJECT_ID/$APP_NAME/release:latest --build-arg BACKEND_URL=$BACKEND_URL --build-arg COMMIT_SHA=$CIRCLE_SHA1 --build-arg BUILD_DATE=$(date '+%Y-%m-%d')
+      - run: gcloud auth configure-docker
+      - run: gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS --project=$GCLOUD_PROJECT_ID
+      - run: docker push eu.gcr.io/$GCLOUD_PROJECT_ID/$APP_NAME/release:latest
+      - run: echo 'export CONTAINER_IMAGE=`docker images --format "{{.Repository}}@{{.Digest}}" --filter "reference=eu.gcr.io/$GCLOUD_PROJECT_ID/$APP_NAME/release"`' >> $BASH_ENV
+jobs:
+  deploy:
+    machine:
+      image: ubuntu-2004:202111-01
+    steps:
+      - checkout
+      - run: docker build . -t angelvlc/ionic-build
+      - run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run: docker push angelvlc/ionic-build

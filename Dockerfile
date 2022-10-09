@@ -7,7 +7,7 @@ ADD https://services.gradle.org/distributions/gradle-4.10.3-bin.zip .
 RUN unzip gradle-4.10.3-bin.zip > /dev/null
 
 # ---------------------------------------------
-FROM node:10.15.1-stretch-slim
+FROM node:16-stretch-slim
 
 # java
 RUN mkdir -p /usr/share/man/man1 \
@@ -35,5 +35,5 @@ COPY --from=android-tools /tmp/gradle-4.10.3/ .
 ENV PATH="$GRADLE/bin:${PATH}"
 
 # ionic & cordova
-RUN npm install -g ionic@4.10.3 cordova@8.1.2 @angular/cli > /dev/null \
+RUN npm install -g ionic cordova @angular/cli > /dev/null \
   && cordova telemetry off  > /dev/null

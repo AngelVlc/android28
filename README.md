@@ -2,7 +2,7 @@
 
 Docker image with:
 
-- node 10.15.1
+- node
 - openjdk 8
 - android (platform 28 + buildtools + platform-tools + tools)
 - gradle 4.10.3
