@@ -34,6 +34,8 @@ WORKDIR $GRADLE
 COPY --from=android-tools /tmp/gradle-4.10.3/ .
 ENV PATH="$GRADLE/bin:${PATH}"
 
+ENV NG_CLI_ANALYTICS=false
+
 # ionic & cordova
 RUN npm install -g ionic cordova @angular/cli > /dev/null \
   && cordova telemetry off  > /dev/null
