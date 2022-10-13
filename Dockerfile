@@ -1,4 +1,4 @@
-FROM node:16-buster
+FROM node:16-buster-slim
 
 ADD https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip /tmp
 
@@ -23,13 +23,13 @@ WORKDIR $ANDROID_HOME
 RUN unzip /tmp/commandlinetools-linux-8512546_latest.zip
 RUN mv cmdline-tools tools && mkdir cmdline-tools && mv tools cmdline-tools/
 RUN rm /tmp/commandlinetools-linux-8512546_latest.zip
-RUN yes | cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "build-tools;32.0.0" "platform-tools" "tools" && rm -rf emulator
+RUN yes | cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "build-tools;32.0.0" "tools" && rm -rf emulator
 
 ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/32.0.0:${PATH}"
 
 # gradle
 WORKDIR $GRADLE
-RUN unzip /tmp/gradle-7.5-bin.zip
+RUN unzip /tmp/gradle-7.5-bin.zip && rm /tmp/gradle-7.5-bin.zip
 ENV PATH="$GRADLE/gradle-7.5/bin:${PATH}"
 
 ENV NG_CLI_ANALYTICS=false
