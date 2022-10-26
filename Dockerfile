@@ -2,7 +2,7 @@ FROM node:16-buster-slim
 
 ADD https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip /tmp
 
-ADD https://services.gradle.org/distributions/gradle-7.5-bin.zip /tmp
+ADD https://services.gradle.org/distributions/gradle-7.4.2-bin.zip /tmp
 
 ENV NODE_OPTIONS=--max_old_space_size=8096
 
@@ -29,10 +29,10 @@ ENV PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-too
 
 # gradle
 WORKDIR $GRADLE
-RUN unzip /tmp/gradle-7.5-bin.zip && rm /tmp/gradle-7.5-bin.zip
+RUN unzip /tmp/gradle-7.4.2-bin.zip && rm /tmp/gradle-7.4.2-bin.zip
 ENV PATH="$GRADLE/gradle-7.5/bin:${PATH}"
 
 ENV NG_CLI_ANALYTICS=false
 
-# ionic & cordova
-RUN npm install --location=global @ionic/cli cordova cordova-res @angular/cli && cordova telemetry off
+# ionic && angular
+RUN npm install --location=global @ionic/cli @angular/cli
